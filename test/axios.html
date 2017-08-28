@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="../node_modules/vue/dist/vue.min.js"></script>
+  <script src="../node_modules/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <div>axios讲解</div>
+  <a href="javascript:;" class="btn btn-primary" @click="get">Get请求</a>
+  <a href="javascript:;" class="btn btn-primary" @click="post">Post请求</a>
+  <a href="javascript:;" class="btn btn-primary" @click="http">http请求</a>
+</div>
+<!-- built files will be auto injected -->
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+
+    },
+    mounted () {
+      axios.interceptors.request.use(function(config) {
+        console.log("request init");
+        return config
+      });
+
+      axios.interceptors.response.use(function(response) {
+        console.log("response init");
+        return response
+      })
+    },
+    methods: {
+      get: function() {
+        axios.get('pac1kage.json', {
+          params: {
+            userId: '123'
+          },
+          headers: {
+            token: '123'
+          }
+        }).then((res) => {
+          console.log(res.data);
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      post: function () {
+        axios.post('package.json', {
+          userId: '888'
+        }, {
+          headers: {
+            token: '123'
+          }
+        }).then((res) => {
+            console.log(res.data);
+        }).catch(err => {
+            console.log(err)
+        })
+      },
+      http: function () {
+        axios({
+          url: 'package.json',
+          method: 'get',
+          data: {
+            userId: '123'
+          },
+          params: {
+            userId: '103'
+          },
+          headers: {
+            token: 'bbb'
+          }
+        }).then(res => {
+          console.log(res.data);
+        })
+      }
+    }
+  })
+</script>
+</body>
+</html>

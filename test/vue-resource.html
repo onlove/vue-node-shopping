@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>vue-shopping</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+    <script src="../node_modules/vue-resource/dist/vue-resource.min.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div>vue-resource讲解</div>
+      <a href="javascript:;" class="btn btn-primary" @click="get">Get请求</a>
+      <a href="javascript:;" class="btn btn-primary" @click="post">Post请求</a>
+      <a href="javascript:;" class="btn btn-primary" @click="jsonp">JSONP请求</a>
+    </div>
+    <!-- built files will be auto injected -->
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+
+        },
+        mounted () {
+          Vue.http.interceptors.push(function(request, next) {
+            console.log("requrest init");
+            next(function(response) {
+              console.log("response init");
+              return response;
+            })
+          })
+        },
+        methods: {
+          get: function() {
+            this.$http.get('http://www.imooc.com/course/AjaxCourseMember?ids=796', {
+              params: {
+                userId: '101'
+              },
+              headers: {
+                token: 'abcd'
+              }
+            }).then((res) => {
+              this.msg = res.data;
+            })
+          },
+          post: function () {
+            this.$http.post('package.json', {
+              userId: '102'
+            }, {
+              headers: {
+                access_token: 'abc'
+              }
+            }).then((res) => {
+              this.msg = res.data;
+            })
+          },
+          jsonp: function () {
+            this.$http.jsonp('http://www.imooc.com/course/AjaxCourseMember?ids=796').then((res) => {
+              this.msg = res.data;
+            console.log(this.msg);
+           })
+          }
+        }
+      })
+    </script>
+  </body>
+</html>
