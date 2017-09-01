@@ -169,15 +169,15 @@
 
                 this.orderTotal = this.subTotal+this.shipping-this.discount+this.tax;
             });
-         },
+          },
           payMent(){
               var addressId = this.$route.query.addressId;
               axios.post("/users/payMent",{
-                addressId:addressId,
-                orderTotal:this.orderTotal
+                addressId: addressId,
+                orderTotal: this.orderTotal
               }).then((response)=>{
                   let res = response.data;
-                  if(res.status=="0"){
+                  if(res.status == "0") {
                       this.$router.push({
                           path:'/orderSuccess?orderId='+res.result.orderId
                       })
