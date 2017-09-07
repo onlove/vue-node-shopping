@@ -82,9 +82,9 @@
                   <div class="item-quantity">
                     <div class="select-self select-self-open">
                       <div class="select-self-area">
-                        <a class="input-sub" @click="editCart('minu', item)">-</a>
+                        <a class="input-sub" @click.stop="editCart('mius', item)">-</a>
                         <span class="select-ipt">{{item.productNum}}</span>
-                        <a class="input-add" @click="editCart('add', item)">+</a>
+                        <a class="input-add" @click.stop="editCart('add', item)">+</a>
                       </div>
                     </div>
                   </div>
@@ -94,7 +94,7 @@
                 </div>
                 <div class="cart-tab-5">
                   <div class="cart-item-opration">
-                    <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item.productId)">
+                    <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item)">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
                       </svg>
@@ -199,18 +199,19 @@
           },
           delCart () {
             axios.post('/users/cartDel', {
-              productId: this.productId
+              productId: this.delItem.productId
             }).then((response) => {
               let res = response.data;
               if (res.status === '0') {
                 this.modalConfirm = false;
                 this.init();
+                this.$store.commit('updateCartCount', -this.delItem.productNum);
               }
             })
           },
-          delCartConfirm (prodUctId) {
+          delCartConfirm (delItem) {
             this.modalConfirm = true;
-            this.productId = prodUctId;
+            this.delItem = delItem;
           },
           editCart (flag, productObj) {
             if (flag === 'add') {
@@ -229,6 +230,13 @@
               checked: productObj.checked
             }).then((response) => {
               let res = response.data;
+              let num = 0;
+              if (flag === 'add') {
+                 num = 1;
+              } else if (flag === 'mins') {
+                 num = -1;
+              }
+              this.$store.commit('updateCartCount', num);
             })
           },
           toggleCheckAll(){

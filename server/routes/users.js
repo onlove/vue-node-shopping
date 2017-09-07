@@ -27,6 +27,10 @@ router.post('/login', (req, res, next) => {
           path: '/',
           maxAge: 1000 * 60 * 60
         });
+        res.cookie("userName",doc.userName,{
+          path:'/',
+          maxAge: 1000 * 60 * 60
+        });
         //req.session.user = doc;
         res.json({
           status: '0',
@@ -52,22 +56,47 @@ router.post('/logout', (req, res) => {
   })
 })
 
-
-router.get("/checkLogin", function (req, res, next) {
-  if (req.cookies.userId) {
+router.get("/checkLogin", function (req,res,next) {
+  if(req.cookies.userId){
     res.json({
-      status: '0',
-      msg: '',
-      result: req.cookies.userName || ''
+      status:'0',
+      msg:'',
+      result:req.cookies.userName || ''
     });
-  } else {
+  }else{
     res.json({
-      status: '1',
-      msg: '未登录',
-      result: ''
+      status:'1',
+      msg:'未登录',
+      result:''
     });
   }
 });
+
+router.get('/getCartCount', (req, res, next) => {
+  if (req.cookies && req.cookies.userId) {
+    var userId = req.cookies.userId;
+    User.findOne({userId: userId}, (err, doc) => {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result:''
+        });
+      } else {
+        let cartList = doc.cartList;
+        let cartCount = 0;
+        cartList.map((item) => {
+          cartCount += parseInt(item.productNum);
+        });
+        res.json({
+          status: 0,
+          msg: '',
+          result: cartCount
+        });
+      }
+    })
+  }
+})
 
 router.get('/cartList', (req, res) => {
   var userId = req.cookies.userId;
